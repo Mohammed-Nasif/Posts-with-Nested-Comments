@@ -1,11 +1,11 @@
+import './posts.scss';
 import { BsChatRightText, BsFillCursorFill } from 'react-icons/bs';
-
-import { useState, useContext, useRef } from 'react';
-import { DataContext } from '../../context/DataContext';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { DataContextType, Post as PostProp, Comment } from '../../@types/data';
 import { v4 as uuidv4 } from 'uuid';
+import { DataContext } from '../../context/DataContext';
 
-import './posts.scss';
+
 
 export default function Posts() {
 	const { posts } = useContext(DataContext) as DataContextType;
@@ -25,12 +25,20 @@ export default function Posts() {
 	);
 }
 
+
+
+
 export function Post({ postObj }: any): JSX.Element {
 	const [showComments, setShowComments] = useState<boolean>(false);
 	const [comment, setComment] = useState<string>('');
 	const [comments, setComments] = useState<Comment[]>([]);
+	const [postComments, setPostComments] = useState<Comment[]>([]);
 	const { addComment } = useContext(DataContext) as DataContextType;
 	const commentArea = useRef<HTMLTextAreaElement>(null);
+
+	useEffect(() => {
+		setPostComments(postObj.comments);
+	}, [postObj]);
 
 	const sendComment = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 		(e.key === 'Enter' || e.key === 'NumpadEnter') && !e.shiftKey && handleComment();
@@ -43,6 +51,7 @@ export function Post({ postObj }: any): JSX.Element {
 				id: commentId,
 				content: comment,
 				createdAt: new Date(),
+				replys: [],
 			};
 			setComments([...comments, newComment]);
 			addComment(newComment, postObj.id);
@@ -97,8 +106,8 @@ export function Post({ postObj }: any): JSX.Element {
 				</div>
 				{showComments && (
 					<div className='comments w-100 border-top border-1 px-4 py-2'>
-						{comments.length !== 0 &&
-							comments.map((comment, i) => {
+						{postComments.length !== 0 &&
+							postComments.map((comment) => {
 								return <Postcomment comment={comment} postId={postObj.id} key={comment.id} />;
 							})}
 
@@ -126,13 +135,17 @@ export function Post({ postObj }: any): JSX.Element {
 	);
 }
 
+
+
+
+
 export function Postcomment({ comment, postId }: any): JSX.Element {
 	const [showReplys, setShowReplys] = useState<boolean>(false);
 	const [reply, setReply] = useState<string>('');
+	const [replyParentId, setReplyParentId] = useState<string>('');
 	const [replys, setReplys] = useState<Comment[]>([]);
-
+	const { addReply } = useContext(DataContext) as DataContextType;
 	const replyArea = useRef<HTMLTextAreaElement>(null);
-
 	const sendReply = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 		(e.key === 'Enter' || e.key === 'NumpadEnter') && !e.shiftKey && handleReply();
 	};
@@ -144,7 +157,9 @@ export function Postcomment({ comment, postId }: any): JSX.Element {
 				id: replyId,
 				content: reply,
 				createdAt: new Date(),
+				replys: [],
 			};
+			addReply(newReply, postId, replyParentId);
 			setReplys([...replys, newReply]);
 			setReply('');
 			if (replyArea.current) replyArea.current.value = '';
@@ -184,13 +199,14 @@ export function Postcomment({ comment, postId }: any): JSX.Element {
 					className='btn pe-0'
 					onClick={() => {
 						setShowReplys((prev) => !prev);
+						setReplyParentId(comment.id);
 					}}>
 					<BsChatRightText className='icon' /> Reply
 				</div>
 				{showReplys && (
 					<div className='comments w-100 border-top border-1 px-4 py-2'>
-						{replys.length !== 0 &&
-							replys.map((reply) => {
+						{comment.replys.length !== 0 &&
+							comment.replys.map((reply: Comment) => {
 								return <Postcomment comment={reply} postId={comment.id} key={reply.id} />;
 							})}
 
