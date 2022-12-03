@@ -31,6 +31,7 @@ export default function AddPost(): JSX.Element {
 				id: postId,
 				content: postText,
 				createdAt: new Date(),
+				comments: [],
 			};
 			addPost(newPost);
 			console.log(posts);
@@ -42,7 +43,7 @@ export default function AddPost(): JSX.Element {
 
 	return (
 		<>
-			<div className='add-new-post border border-1 rounded-4 w-25 py-2 fixed-top mt-5 m-auto'>
+			<div className='add-new-post border border-1 rounded-4 w-25 py-2 mt-5 mx-auto'>
 				<div className='row px-3'>
 					<div className='col-1'>
 						<BsPencil className='icon border-1' />

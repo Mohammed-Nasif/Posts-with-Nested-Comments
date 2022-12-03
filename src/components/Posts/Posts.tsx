@@ -12,13 +12,15 @@ export default function Posts() {
 
 	return (
 		<div>
-			{posts.map((post: PostProp) => {
-				return (
-					<div key={post.id}>
-						<Post postObj={post} />
-					</div>
-				);
-			})}
+			{posts
+				.sort((a, b) => b.createdAt.valueOf() - a.createdAt.valueOf())
+				.map((post: PostProp) => {
+					return (
+						<div key={post.id}>
+							<Post postObj={post} />
+						</div>
+					);
+				})}
 		</div>
 	);
 }
@@ -27,11 +29,8 @@ export function Post({ postObj }: any): JSX.Element {
 	const [showComments, setShowComments] = useState<boolean>(false);
 	const [comment, setComment] = useState<string>('');
 	const [comments, setComments] = useState<Comment[]>([]);
-
+	const { addComment } = useContext(DataContext) as DataContextType;
 	const commentArea = useRef<HTMLTextAreaElement>(null);
-	const post = useRef<HTMLDivElement>(null);
-
-	// useEffect(() => {}, [postObj]);
 
 	const sendComment = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 		(e.key === 'Enter' || e.key === 'NumpadEnter') && !e.shiftKey && handleComment();
@@ -46,7 +45,7 @@ export function Post({ postObj }: any): JSX.Element {
 				createdAt: new Date(),
 			};
 			setComments([...comments, newComment]);
-			console.log(comments);
+			addComment(newComment, postObj.id);
 			setComment('');
 			if (commentArea.current) commentArea.current.value = '';
 		}
@@ -74,7 +73,7 @@ export function Post({ postObj }: any): JSX.Element {
 
 	return (
 		<>
-			<div ref={post} className='post shadow-sm  border border-1 bg-white rounded-4 mb-3 position-relative'>
+			<div className='post shadow-sm  border border-1 bg-white rounded-4 mb-3 position-relative'>
 				<div className='header p-4 pb-3 pt-2'>
 					<div className='d-flex pt-2'>
 						<div className='name w-100'>
@@ -128,5 +127,93 @@ export function Post({ postObj }: any): JSX.Element {
 }
 
 export function Postcomment({ comment, postId }: any): JSX.Element {
-	return <div>{comment.content}</div>;
+	const [showReplys, setShowReplys] = useState<boolean>(false);
+	const [reply, setReply] = useState<string>('');
+	const [replys, setReplys] = useState<Comment[]>([]);
+
+	const replyArea = useRef<HTMLTextAreaElement>(null);
+
+	const sendReply = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+		(e.key === 'Enter' || e.key === 'NumpadEnter') && !e.shiftKey && handleReply();
+	};
+
+	const handleReply = (): void => {
+		const replyId = uuidv4();
+		if (reply.trim() !== '') {
+			const newReply: Comment = {
+				id: replyId,
+				content: reply,
+				createdAt: new Date(),
+			};
+			setReplys([...replys, newReply]);
+			setReply('');
+			if (replyArea.current) replyArea.current.value = '';
+		}
+	};
+
+	const getTimeDiff = () => {
+		if (comment.createdAt) {
+			const diff: number = new Date().valueOf() - comment.createdAt.valueOf();
+			var days = Math.floor(diff / 86400000); // days
+			var hours = Math.floor((diff % 86400000) / 3600000); // hours
+			var mins = Math.round(((diff % 86400000) % 3600000) / 60000); // minutes
+			return days > 0
+				? days === 1
+					? `Yesterday`
+					: `${days} day ago`
+				: hours > 0
+				? hours === 1
+					? `Last hour`
+					: `${hours} hours ago`
+				: mins > 1
+				? `${mins} minutes ago`
+				: `Just Now`;
+		}
+	};
+
+	return (
+		<div className='d-flex border-bottom border-1 mb-1' key={comment.Id}>
+			<div className='comment-body'>
+				<div className='user-name text-start fw-bold mb-1 text-capitalize fs-6'>Mohammed Nasif</div>
+				<div className='date fw-light mb-2' title={comment.createdAt && comment.createdAt.toLocaleString()}>
+					{getTimeDiff()}
+				</div>
+				<p className='comment-txt lh-sm mb-2 text-start fs-5'>{comment.content}</p>
+				{/* comment */}
+				<div
+					className='btn pe-0'
+					onClick={() => {
+						setShowReplys((prev) => !prev);
+					}}>
+					<BsChatRightText className='icon' /> Reply
+				</div>
+				{showReplys && (
+					<div className='comments w-100 border-top border-1 px-4 py-2'>
+						{replys.length !== 0 &&
+							replys.map((reply) => {
+								return <Postcomment comment={reply} postId={comment.id} key={reply.id} />;
+							})}
+
+						{/* add reply */}
+						<div className='row'>
+							<div className='comment-body col-10'>
+								<div className='user-name text-start fw-bold mb-1 text-capitalize fs-6'>Mohammed Nasif</div>
+								<textarea
+									className='w-100'
+									ref={replyArea}
+									rows={2}
+									onChange={(e) => {
+										setReply(e.target.value);
+									}}
+									onKeyDown={sendReply}></textarea>
+							</div>
+							<div className='btn h-25 align-self-center fs-4 ms-auto col-2' onClick={handleReply}>
+								<BsFillCursorFill />
+							</div>
+						</div>
+					</div>
+				)}
+			</div>
+		</div>
+	);
 }

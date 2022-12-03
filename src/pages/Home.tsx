@@ -6,7 +6,9 @@ export default function Home(): JSX.Element {
 	return (
 		<>
 			<AddPost />
-			<Posts />
+			<div style={{ marginTop: 50 + 'px' }}>
+				<Posts />
+			</div>
 		</>
 	);
 }

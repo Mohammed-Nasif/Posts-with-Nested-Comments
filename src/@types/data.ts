@@ -2,6 +2,7 @@ export interface Post {
 	id: string;
 	content: string;
 	createdAt: Date;
+	comments: Comment[];
 }
 
 export interface Comment {
@@ -12,5 +13,6 @@ export interface Comment {
 
 export type DataContextType = {
 	posts: Post[];
-	addPost: (todo: Post) => void;
+	addPost: (post: Post) => void;
+	addComment: (comment: Comment, id: string) => void;
 };
