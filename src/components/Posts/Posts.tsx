@@ -5,9 +5,7 @@ import { DataContextType, Post as PostProp, Comment } from '../../@types/data';
 import { v4 as uuidv4 } from 'uuid';
 import { DataContext } from '../../context/DataContext';
 
-
-
-export default function Posts() {
+export default function Posts(): JSX.Element {
 	const { posts } = useContext(DataContext) as DataContextType;
 
 	return (
@@ -25,9 +23,6 @@ export default function Posts() {
 	);
 }
 
-
-
-
 export function Post({ postObj }: any): JSX.Element {
 	const [showComments, setShowComments] = useState<boolean>(false);
 	const [comment, setComment] = useState<string>('');
@@ -40,7 +35,7 @@ export function Post({ postObj }: any): JSX.Element {
 		setPostComments(postObj.comments);
 	}, [postObj]);
 
-	const sendComment = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+	const sendComment = (e: React.KeyboardEvent<HTMLTextAreaElement>): void => {
 		(e.key === 'Enter' || e.key === 'NumpadEnter') && !e.shiftKey && handleComment();
 	};
 
@@ -98,7 +93,7 @@ export function Post({ postObj }: any): JSX.Element {
 				<p className='mb-1 lh-sm post-content mx-4'>{postObj.content}</p>
 				{/* comment */}
 				<div
-					className='btn pe-0'
+					className={showComments ? 'btn pe-0 fw-bold text-danger' : 'btn pe-0'}
 					onClick={() => {
 						setShowComments((prev) => !prev);
 					}}>
@@ -106,11 +101,6 @@ export function Post({ postObj }: any): JSX.Element {
 				</div>
 				{showComments && (
 					<div className='comments w-100 border-top border-1 px-4 py-2'>
-						{postComments.length !== 0 &&
-							postComments.map((comment) => {
-								return <Postcomment comment={comment} postId={postObj.id} key={comment.id} />;
-							})}
-
 						{/* add Comment */}
 						<div className='row'>
 							<div className='comment-body col-10'>
@@ -118,7 +108,7 @@ export function Post({ postObj }: any): JSX.Element {
 								<textarea
 									className='w-100'
 									ref={commentArea}
-									rows={2}
+									rows={1}
 									onChange={(e) => {
 										setComment(e.target.value);
 									}}
@@ -128,16 +118,16 @@ export function Post({ postObj }: any): JSX.Element {
 								<BsFillCursorFill />
 							</div>
 						</div>
+						{postComments.length !== 0 &&
+							postComments.map((comment) => {
+								return <Postcomment comment={comment} postId={postObj.id} key={comment.id} />;
+							})}
 					</div>
 				)}
 			</div>
 		</>
 	);
 }
-
-
-
-
 
 export function Postcomment({ comment, postId }: any): JSX.Element {
 	const [showReplys, setShowReplys] = useState<boolean>(false);
@@ -194,9 +184,9 @@ export function Postcomment({ comment, postId }: any): JSX.Element {
 					{getTimeDiff()}
 				</div>
 				<p className='comment-txt lh-sm mb-2 text-start fs-5'>{comment.content}</p>
-				{/* comment */}
+				{/* Reply */}
 				<div
-					className='btn pe-0'
+					className={showReplys ? 'btn pe-0 fw-bold' : 'btn pe-0'}
 					onClick={() => {
 						setShowReplys((prev) => !prev);
 						setReplyParentId(comment.id);
@@ -217,7 +207,7 @@ export function Postcomment({ comment, postId }: any): JSX.Element {
 								<textarea
 									className='w-100'
 									ref={replyArea}
-									rows={2}
+									rows={1}
 									onChange={(e) => {
 										setReply(e.target.value);
 									}}

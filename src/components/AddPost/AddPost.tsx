@@ -12,7 +12,7 @@ export default function AddPost(): JSX.Element {
 	const [isError, setIsError] = useState<boolean>(false);
 	const { addPost, posts } = useContext(DataContext) as DataContextType;
 
-	const createPost = () => {
+	const createPost = (): void => {
 		setisACtive(true);
 		if (txtarea.current) txtarea.current.focus();
 	};
@@ -57,7 +57,7 @@ export default function AddPost(): JSX.Element {
 								setIsError(false);
 							}}
 							id='newpost'
-							rows={isActive ? 5 : 1}
+							rows={isActive ? 3 : 1}
 							placeholder='write something...'
 							maxLength={350}
 							className={postText.length === 350 ? 'text-muted' : ''}

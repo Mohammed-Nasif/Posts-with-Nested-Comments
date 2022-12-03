@@ -22,36 +22,17 @@
 		border: 0;
 		resize: none;
 		width: 100%;
+		padding-left: 10px;
 		&:focus-visible {
 			outline: none;
+		}
+		&::placeholder{
+			padding: 10px;
+			font-size: 18px;
 		}
 	}
 	.btn:active {
 		border-color: transparent !important;
-	}
-	.preview {
-		max-height: 200px;
-		overflow: hidden;
-		img {
-			max-width: 100%;
-			transition: 0.5s all ease;
-		}
-		.del {
-			top: 1rem;
-			right: 1rem;
-			cursor: pointer;
-			z-index: 22;
-			display: none;
-		}
-		&:hover {
-			img {
-				scale: 1.1;
-				opacity: 0.4;
-			}
-			.del {
-				display: block;
-			}
-		}
 	}
 	&:has(textarea:focus) {
 		box-shadow: 0px 1px 10px lightgray;

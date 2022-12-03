@@ -58,7 +58,7 @@ const DataProvider: FC<Props> = ({ children }) => {
 			],
 		},
 	];
-	
+
 	const [posts, setPosts] = useState<Post[]>(INITIAL_Data);
 
 	const addPost = (post: Post): void => {
@@ -83,23 +83,22 @@ const DataProvider: FC<Props> = ({ children }) => {
 	};
 
 	const addReply = (reply: Comment, postId: string, replyParetntId: string): void => {
-		posts.forEach((post: Post) => {
-			function findNestedObj(entireObj: Post, keyToFind: any, valToFind: string) {
-				let foundObj;
-				JSON.stringify(entireObj, (_, nestedValue) => {
-					if (nestedValue && nestedValue[keyToFind] === valToFind) {
-						foundObj = nestedValue;
-					}
-					return nestedValue;
-				});
-				return foundObj;
-			}
-			const obj: Comment = findNestedObj(post, 'id', replyParetntId) || { id: '', content: '', createdAt: new Date() };
-			if (obj) {
-				obj.replys?.push(reply);
-				setPosts([...posts]);
-			}
-		});
+		function findNestedObj(entireObj: Post[], keyToFind: any, valToFind: string) {
+			let foundObj;
+			JSON.stringify(entireObj, (_, nestedValue) => {
+				if (nestedValue && nestedValue[keyToFind] === valToFind) {
+					foundObj = nestedValue;
+				}
+				return nestedValue;
+			});
+			return foundObj;
+		}
+		const obj: Comment = findNestedObj(posts, 'id', replyParetntId) || { id: '', content: '', createdAt: new Date() };
+		if (obj) {
+			obj.replys?.push(reply);
+			setPosts([...posts]);
+		}
+		console.log(posts);
 	};
 
 	return <DataContext.Provider value={{ posts, addPost, addComment, addReply }}>{children}</DataContext.Provider>;

@@ -1,18 +1,6 @@
 .post {
 	color: black;
 	width: 600px;
-	.user-photo {
-		img {
-			border-radius: 50%;
-			width: 2.8125rem;
-			height: 2.8125rem;
-			object-fit: cover;
-		}
-	}
-	.name a {
-		text-decoration: none;
-		color: inherit;
-	}
 	.date {
 		font-size: 1rem;
 		cursor: default;
@@ -42,13 +30,6 @@
 				}
 			}
 			position: relative;
-			.badge {
-				font-size: 0.65rem;
-				line-height: 0.7rem;
-				position: absolute;
-				right: -25%;
-				top: 20%;
-			}
 		}
 
 		.comments {
@@ -65,12 +46,8 @@
 				font-size: 0.85rem;
 				.user-name {
 					text-align: left;
-                    width: fit-content;
+					width: fit-content;
 				}
-			}
-			a {
-				text-decoration: none;
-				color: inherit;
 			}
 			textarea {
 				border: 1px solid lightgray;
@@ -82,25 +59,9 @@
 				}
 			}
 		}
-		.remove-comment {
-			cursor: pointer;
-			font-size: 0.85rem;
-		}
 	}
 
 	p {
 		line-break: anywhere;
 	}
-}
-
-.sys-badge {
-	width: 2.5rem;
-	height: 1rem;
-}
-.inst-badge {
-	width: 1rem;
-}
-.special_badge {
-	width: 20px;
-	height: 18px;
 }
