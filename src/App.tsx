@@ -1,12 +1,11 @@
-import React from 'react';
 import './App.css';
+import Home from './pages/Home';
 
-function App() {
+function App(): JSX.Element {
 	return (
 		<div className='App'>
 			<header className='App-header'>
-				Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis nam itaque quia ipsa rerum voluptate enim tempore sit quibusdam vitae?
-				Molestias nesciunt et sint animi, ut voluptatem totam blanditiis atque.
+				<Home />
 			</header>
 		</div>
 	);
