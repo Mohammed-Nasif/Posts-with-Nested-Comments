@@ -134,8 +134,10 @@ export function Postcomment({ comment, postId }: any): JSX.Element {
 	const [reply, setReply] = useState<string>('');
 	const [replyParentId, setReplyParentId] = useState<string>('');
 	const [replys, setReplys] = useState<Comment[]>([]);
+	const [blured, setBlured] = useState<boolean>(false);
 	const { addReply } = useContext(DataContext) as DataContextType;
 	const replyArea = useRef<HTMLTextAreaElement>(null);
+
 	const sendReply = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 		(e.key === 'Enter' || e.key === 'NumpadEnter') && !e.shiftKey && handleReply();
 	};
@@ -188,7 +190,11 @@ export function Postcomment({ comment, postId }: any): JSX.Element {
 				<div
 					className={showReplys ? 'btn pe-0 fw-bold' : 'btn pe-0'}
 					onClick={() => {
-						setShowReplys((prev) => !prev);
+						if (blured) {
+							setBlured((prev) => !prev);
+						} else {
+							setShowReplys((prev) => !prev);
+						}
 						setReplyParentId(comment.id);
 					}}>
 					<BsChatRightText className='icon' /> Reply
@@ -199,15 +205,16 @@ export function Postcomment({ comment, postId }: any): JSX.Element {
 							comment.replys.map((reply: Comment) => {
 								return <Postcomment comment={reply} postId={comment.id} key={reply.id} />;
 							})}
-
 						{/* add reply */}
-						<div className='row'>
+						<div className={blured ? 'd-none' : ' d-flex row'}>
 							<div className='comment-body col-10'>
 								<div className='user-name text-start fw-bold mb-1 text-capitalize fs-6'>Mohammed Nasif</div>
 								<textarea
 									className='w-100'
 									ref={replyArea}
 									rows={1}
+									autoFocus={!blured}
+									onBlur={() => setBlured((prev) => !prev)}
 									onChange={(e) => {
 										setReply(e.target.value);
 									}}
