@@ -8,7 +8,7 @@ interface Props {
 }
 
 const DataProvider: FC<Props> = ({ children }) => {
-	const INITIAL_Data: Post[] = [
+	const INITIAL_DATA: Post[] = [
 		{
 			id: '99e37e42-80fd-4a04-b6f6-9e9c30578e66',
 			content: 'Hi, Ramy!',
@@ -59,7 +59,7 @@ const DataProvider: FC<Props> = ({ children }) => {
 		},
 	];
 
-	const [posts, setPosts] = useState<Post[]>(INITIAL_Data);
+	const [posts, setPosts] = useState<Post[]>(INITIAL_DATA);
 
 	const addPost = (post: Post): void => {
 		const newPost: Post = {
@@ -82,7 +82,7 @@ const DataProvider: FC<Props> = ({ children }) => {
 		console.log(posts);
 	};
 
-	const addReply = (reply: Comment, postId: string, replyParetntId: string): void => {
+	const addReply = (reply: Comment, postId: string, replyParentId: string): void => {
 		function findNestedObj(entireObj: Post[], keyToFind: any, valToFind: string) {
 			let foundObj;
 			JSON.stringify(entireObj, (_, nestedValue) => {
@@ -93,7 +93,7 @@ const DataProvider: FC<Props> = ({ children }) => {
 			});
 			return foundObj;
 		}
-		const obj: Comment = findNestedObj(posts, 'id', replyParetntId) || { id: '', content: '', createdAt: new Date() };
+		const obj: Comment = findNestedObj(posts, 'id', replyParentId) || { id: '', content: '', createdAt: new Date() };
 		if (obj) {
 			obj.replys?.push(reply);
 			setPosts([...posts]);
