@@ -136,6 +136,7 @@ export function Postcomment({ comment, postId }: any): JSX.Element {
 	const [replys, setReplys] = useState<Comment[]>([]);
 	const { addReply } = useContext(DataContext) as DataContextType;
 	const replyArea = useRef<HTMLTextAreaElement>(null);
+
 	const sendReply = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 		(e.key === 'Enter' || e.key === 'NumpadEnter') && !e.shiftKey && handleReply();
 	};
@@ -208,8 +209,12 @@ export function Postcomment({ comment, postId }: any): JSX.Element {
 									className='w-100'
 									ref={replyArea}
 									rows={1}
+									autoFocus
 									onChange={(e) => {
 										setReply(e.target.value);
+									}}
+									onFocus={() => {
+										replyArea && replyArea.current?.scrollIntoView({ behavior: 'smooth' });
 									}}
 									onKeyDown={sendReply}></textarea>
 							</div>
